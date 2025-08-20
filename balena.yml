@@ -1,0 +1,82 @@
+name: Helium Gateway with RAK2287
+type: sw.application
+description: >-
+  Complete Helium Data-Only Gateway using gateway-rs 1.3.0 and RAK2287 concentrator.
+  This application provides a modern, reliable Helium gateway solution for Raspberry Pi 4
+  with RAK2287 LoRa concentrator hat.
+  
+joinable: false
+
+post-provisioning: |
+  ## Helium Gateway with RAK2287
+  
+  This fleet provides a complete Helium Data-Only Gateway solution using:
+  - **gateway-rs v1.3.0** - Latest Helium gateway software
+  - **RAK2287 LoRa Concentrator** - SX1302-based concentrator with excellent performance
+  - **Raspberry Pi 4** - Recommended platform for reliable operation
+  
+  ### Hardware Requirements
+  
+  - Raspberry Pi 4 (2GB+ RAM recommended)
+  - RAK2287 LoRa concentrator with Pi HAT
+  - MicroSD card (32GB+ recommended)
+  - Stable power supply (3A+ recommended)
+  - Internet connection (Ethernet preferred)
+  
+  ### Configuration
+  
+  #### Required Device Variables
+  
+  Set these in your device's **Device Variables** section:
+  
+  - `REGION_OVERRIDE` - Your frequency region (e.g., `US915`, `EU868`, `AU915`, `AS923`)
+  
+  #### Optional Device Variables
+  
+  - `GATEWAY_EUI` - Custom gateway EUI (auto-generated if not set)
+  - `GW_KEYPAIR` - Custom keypair path (uses ECC chip or file storage if not set)
+  
+  ### Getting Started
+  
+  1. **Deploy the Application**: Use the "Deploy with balena" button or push this code to your fleet
+  2. **Set Region**: Configure `REGION_OVERRIDE` device variable for your location
+  3. **Wait for Services**: Both `gateway-service` and `packet-forwarder` should start successfully
+  4. **Get Gateway Info**: In the gateway-service terminal, run: `helium_gateway -c /etc/helium_gateway key info`
+  5. **Register Gateway**: Use the Helium CLI or Console to register your gateway on the network
+  
+  ### Service Architecture
+  
+  - **gateway-service**: Runs gateway-rs, handles blockchain communication
+  - **packet-forwarder**: Manages RAK2287 concentrator, forwards LoRa packets
+  
+  ### Monitoring
+  
+  Both services include health checks and will restart automatically if they fail.
+  Check the logs in each service to monitor operation.
+  
+  ### Support
+  
+  - Helium Documentation: https://docs.helium.com/
+  - Gateway-rs Repository: https://github.com/helium/gateway-rs
+  - RAK2287 Documentation: https://docs.rakwireless.com/
+  
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/helium/gateway-rs'
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://avatars.githubusercontent.com/u/22476818?s=200&v=4'
+
+data:
+  applicationEnvironmentVariables:
+    - REGION_OVERRIDE: US915
+    - GATEWAY_EUI: 
+    - GW_KEYPAIR: 
+  defaultDeviceType: raspberrypi4-64
+  supportedDeviceTypes:
+    - raspberrypi4-64
+    - raspberrypi3-64
+
