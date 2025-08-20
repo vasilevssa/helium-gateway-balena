@@ -62,7 +62,7 @@ Once deployed and running:
 
 1. Open Balena Cloud terminal for your device
 2. Select the `gateway-service` service
-3. Run: `helium_gateway -c /etc/helium_gateway key info`
+3. Run: `/usr/bin/helium_gateway -c /etc/helium_gateway/settings.toml key info`
 4. Note the gateway address and EUI for blockchain registration
 
 ## Architecture
