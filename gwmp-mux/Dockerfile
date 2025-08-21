@@ -24,7 +24,6 @@ RUN mkdir -p /etc/gwmp-mux
 
 # Copy startup script and config template
 COPY start-gwmp-mux.sh /opt/start-gwmp-mux.sh
-COPY config.toml.template /opt/config.toml.template
 RUN chmod +x /opt/start-gwmp-mux.sh
 
 # Expose the GWMP port (where packet forwarder connects)
