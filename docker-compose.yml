@@ -7,8 +7,7 @@
       build: ./gateway-service
       restart: unless-stopped
       ports:
-        - "1700:1700/udp"  
-        - "4467:4467"      
+        - "4467:4467"      # gateway-rs API
       volumes:
         - gateway-data:/etc/helium_gateway
         - gateway-logs:/var/log
@@ -21,22 +20,23 @@
         io.balena.features.balena-api: '1'
         io.balena.features.supervisor-api: '1'
 
-    # gwmp-mux:
-      # build: ./gwmp-mux
-      # restart: unless-stopped
-      # environment:
-        # RUST_LOG: info    
-      # networks: [gateway-net]
-      # depends_on: [gateway-service]
-      # If you need external gateways to hit the host on 1700, publish it:
-      # ports: ["1700:1681/udp"]
+    gwmp-mux:
+      build: ./gwmp-mux
+      restart: unless-stopped
+      ports:
+        - "1700:1700/udp"
+      environment:
+        RUST_LOG: debug    
+      depends_on:
+        gateway-service:
+          condition: service_started
+      # volumes:
+      #   - packet-logs:/var/log/packets
 
     packet-forwarder:
       image: rakwireless/udp-packet-forwarder:latest
       restart: unless-stopped
       privileged: true
-      depends_on:
-        - gateway-service
       environment:
         MODEL: "SX1302"  
         CONCENTRATOR: "SX1302"
@@ -50,14 +50,35 @@
         STARTUP_DELAY: 15
         # GATEWAY_EUI: ""
         BAND: "us_902_928"
-        SERVER_HOST: "gateway-service"
-        # SERVER_HOST: "gwmp-mux"  
+        SERVER_HOST: "gwmp-mux"
         SERVER_PORT: 1700
         GPS_LATITUDE: 38.851137
         GPS_LONGITUDE: -121.269953
         GPS_ALTITUDE: 0
-        # depends_on: [gwmp-mux]
+      depends_on:
+        gwmp-mux:
+          condition: service_started
+
+    # packet-logger:
+    #   build: ./packet-logger
+    #   restart: unless-stopped
+    #   environment:
+    #     RUST_LOG: info
+    #     # Comma-separated list of device EUIs or DevAddrs to log
+    #     DEVICE_FILTER: "${DEVICE_FILTER:-}"
+    #     # Log all packets if DEVICE_FILTER is empty
+    #     LOG_ALL_PACKETS: "${LOG_ALL_PACKETS:-true}"
+    #   volumes:
+    #     - packet-logs:/var/log/packets
+    #     - device-logs:/var/log/devices
+    #     - raw-logs:/var/log/raw
+    #   depends_on:
+    #     gwmp-mux:
+    #       condition: service_started
 
   volumes:
     gateway-data:
     gateway-logs:
+    # packet-logs:
+    # device-logs:
+    # raw-logs:
