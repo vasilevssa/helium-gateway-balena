@@ -17,6 +17,8 @@ services:
     environment:
       - GW_REGION=EU868
       - ECC_CHIP=True
+    networks:
+      - balena-network
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
@@ -28,6 +30,10 @@ services:
       - "1700:1700/udp"
     environment:
       RUST_LOG: info
+    networks:
+      - balena-network
+    depends_on:
+      - gateway-service
 
   packet-forwarder:
     image: rakwireless/udp-packet-forwarder:latest
@@ -50,10 +56,18 @@ services:
       BAND: "eu_863_870"
       SERVER_HOST: "gwmp-mux"
       SERVER_PORT: 1700
-      GPS_LATITUDE: "41.2256"    # 👈 ЗАМЕНИ със твоите координати!
-      GPS_LONGITUDE: "25.535"   # 👈 ЗАМЕНИ със твоите координати!
-      GPS_ALTITUDE: "550"
+      GPS_LATITUDE: "41.2256"    # 👈 ТВОИТЕ КООРДИНАТИ
+      GPS_LONGITUDE: "25.535"    # 👈 ТВОИТЕ КООРДИНАТИ
+      GPS_ALTITUDE: "200"        # 👈 ПРОМЕНИ според надморската височина
+    networks:
+      - balena-network
+    depends_on:
+      - gwmp-mux
 
 volumes:
   gateway-data:
   gateway-logs:
+
+networks:
+  balena-network:
+    driver: bridge
