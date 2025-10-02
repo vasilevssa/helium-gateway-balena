@@ -18,9 +18,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install helium gateway binary
-COPY artifacts/helium_gateway /usr/bin/helium_gateway
-RUN chmod 0755 /usr/bin/helium_gateway
+# Extract helium_gateway binary from tar.gz
+COPY artifacts/helium-gateway.tar.gz /tmp/
+RUN tar -xzf /tmp/helium-gateway.tar.gz -C /usr/bin/ && \
+    chmod 0755 /usr/bin/helium_gateway && \
+    rm /tmp/helium-gateway.tar.gz
 
 # Copy configuration files
 COPY start-gateway.sh /opt/gateway/start-gateway.sh
