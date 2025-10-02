@@ -14,7 +14,7 @@ services:
     devices:
       - "/dev/i2c-1:/dev/i2c-1"
       - "/dev/gpiomem:/dev/gpiomem"
-      - "/dev/spidev0.0:/dev/spidev0.0:rwm"  # 👈 ДОБАВИ SPI
+      - "/dev/spidev0.0:/dev/spidev0.0:rwm"
     cap_add: [SYS_RAWIO]
     environment:
       - GW_REGION=EU868
@@ -41,28 +41,13 @@ services:
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 0    # 👈 ПРОМЕНИ на 0 (disable GPIO в packet-forwarder)
-      POWER_EN_GPIO: 0 # 👈 ПРОМЕНИ на 0 (disable GPIO в packet-forwarder)
+      RESET_GPIO: 0
+      POWER_EN_GPIO: 0
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
-      STARTUP_DELAY: 30  # 👈 УВЕЛИЧИ за да се инициализира GPIO първо
+      STARTUP_DELAY: 30
       BAND: "eu_863_870"
       SERVER_HOST: "127.0.0.1"
-      SERVER_PORT: 1700
-      GPS_LATITUDE: "41.2256"
-      GPS_LONGITUDE: "25.535"
-      GPS_ALTITUDE: "200"
-
-volumes:
-  gateway-data:
-  gateway-logs:
-      RESET_GPIO: 17
-      POWER_EN_GPIO: 18
-      RADIO_DEV: "/dev/spidev0.0"
-      SPI_SPEED: 8000000
-      STARTUP_DELAY: 15
-      BAND: "eu_863_870"
-      SERVER_HOST: "127.0.0.1"    # 👈 ПРОМЕНЕНО на localhost
       SERVER_PORT: 1700
       GPS_LATITUDE: "41.2256"
       GPS_LONGITUDE: "25.535"
