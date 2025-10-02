@@ -1,4 +1,3 @@
-# Docker Compose for Helium Gateway with RAK2287
 version: '2.4'
 
 services:
@@ -7,16 +6,17 @@ services:
     restart: unless-stopped
     ports:
       - "4467:4467"      # gateway-rs API
+      - "1680:1680"      # packet forwarder port
     volumes:
       - gateway-data:/etc/helium_gateway
       - gateway-logs:/var/log
-    privileged: true
     devices:
-      - "/dev/gpiochip0"
-      - "/dev/gpiochip1"
+      - "/dev/i2c-1:/dev/i2c-1"
+      - "/dev/gpiomem:/dev/gpiomem"
     cap_add: [SYS_RAWIO]
     environment:
-      - REGION_OVERRIDE=${REGION_OVERRIDE:-US915}
+      - GW_REGION=EU868
+      - ECC_CHIP=True
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
@@ -27,53 +27,33 @@ services:
     ports:
       - "1700:1700/udp"
     environment:
-      RUST_LOG: debug
-    depends_on:
-      gateway-service:
-        condition: service_started
-    # volumes:
-    #   - packet-logs:/var/log/packets
+      RUST_LOG: info
 
   packet-forwarder:
     image: rakwireless/udp-packet-forwarder:latest
     restart: unless-stopped
     privileged: true
+    devices:
+      - "/dev/spidev0.0:/dev/spidev0.0:rwm"
+      - "/dev/gpiomem:/dev/gpiomem"
     environment:
-      MODEL: "SX1302"
+      MODEL: "RAK2287"
       CONCENTRATOR: "SX1302"
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 15
-      POWER_EN_GPIO: 23
+      RESET_GPIO: 17
+      POWER_EN_GPIO: 18
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
       STARTUP_DELAY: 15
-      BAND: "us_902_928"
+      BAND: "eu_863_870"
       SERVER_HOST: "gwmp-mux"
       SERVER_PORT: 1700
-      GPS_LATITUDE: 38.851137
-      GPS_LONGITUDE: -121.269953
-      GPS_ALTITUDE: 0
-    depends_on:
-      gwmp-mux:
-        condition: service_started
-
-  # packet-logger:
-  #   build: ./packet-logger
-  #   restart: unless-stopped
-  #   environment:
-  #     RUST_LOG: info
-  #     DEVICE_FILTER: "${DEVICE_FILTER:-}"
-  #     LOG_ALL_PACKETS: "${LOG_ALL_PACKETS:-true}"
-  #   volumes:
-  #     - packet-logs:/var/log/packets
-  #     - device-logs:/var/log/devices
+      GPS_LATITUDE: "41.2256"    # 👈 ЗАМЕНИ със твоите координати!
+      GPS_LONGITUDE: "25.535"   # 👈 ЗАМЕНИ със твоите координати!
+      GPS_ALTITUDE: "550"
 
 volumes:
-    gateway-data:
-    gateway-logs:
-    # packet-logs:
-    # device-logs:
-    # raw-logs:
-  
+  gateway-data:
+  gateway-logs:

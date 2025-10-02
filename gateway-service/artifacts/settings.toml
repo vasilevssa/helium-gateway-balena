@@ -1,13 +1,12 @@
 ## gateway-rs configuration file
 
 ## Keypair is a string that supports specifying different locations for 
-## the secrets. The default one is file based one since all devices 
-## can support it.
+## the secrets. The default one is file based one since all устройства can support it.
 
 # File based: 
 keypair = "/etc/helium_gateway/gateway_key.bin"
 
-# Ecc608 based:
+# Ecc608 based (закоментирани за безопасност):
 # keypair = "ecc://i2c-1:96?slot=0"
 # onboarding = "ecc://i2c-1:96?slot=15"
 
@@ -19,40 +18,26 @@ listen = "0.0.0.0:1680"
 # network for security
 api = 4467
 
-# The default region to use until a region is received from the Helium network.
-# This value should line up with the configured region of the semtech packet
-# forwarder. Note: Not setting this here or with a GW_REGION env var will stop
-# packet and poc beaconing until the correct asserted region is retrieved. 
-#
+# Default region (оставяме закоментирано, ще се вземе от конфигурацията)
 # region = "US915"
 
 [log]
-# The logging level to assume on startup
+# Logging level
 level = "info"
-# Whether the logged output should include timestamps
 timestamp = true
 
 [poc]
-# Whether the poc is enabled or not. When a gateway is not on chain (i.e.
-# dataonly) set this to true to avoid unneeded RF traffic. Defaults to false. 
-#
-# disable = false
+# Keep PoC disabled until gateway is on-chain
+disable = true
 
-# The uri to fetch entropy for poc beacons
+# Entropy and ingest URIs
 entropy_uri = "http://entropy.iot.mainnet.helium.io:7080"
-# The uri for IOT ingest services to deliver beacons and witnesses
 ingest_uri = "http://mainnet-pociot.helium.io:9080"
 
-# The config service is used to fetch and monitor region parameters and other
-# configuration items
 [config]
 pubkey = "137oJzq1qZpSbzHawaysTGGsRCYTXG1MiTMQNxYSsQJp4YMDdN8"
 uri = "http://mainnet-config.helium.io:6080/"
 
-# The router uri is where lorawan packets are delivered to the helium packet
-# router. 
 [router]
 uri = "http://mainnet-router.helium.io:8080/"
-# Maximum number of packets to queue up for the packet router
 queue = 20
-
