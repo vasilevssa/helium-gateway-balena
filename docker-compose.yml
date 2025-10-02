@@ -19,12 +19,6 @@ services:
     environment:
       - GW_REGION=EU868
       - ECC_CHIP=True
-    healthcheck:
-      test: ["CMD", "pgrep", "helium_gateway"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
@@ -36,8 +30,7 @@ services:
     environment:
       RUST_LOG: info
     depends_on:
-      gateway-service:
-        condition: service_healthy
+      - gateway-service
 
   packet-forwarder:
     image: rakwireless/udp-packet-forwarder:latest
@@ -65,8 +58,7 @@ services:
       GPS_LONGITUDE: "25.535"
       GPS_ALTITUDE: "200"
     depends_on:
-      gateway-service:
-        condition: service_healthy
+      - gateway-service
 
 volumes:
   gateway-data:
