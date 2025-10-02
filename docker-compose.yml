@@ -46,8 +46,8 @@ services:
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 17
-      POWER_EN_GPIO: 18
+      RESET_GPIO: 17     # Променено на 17
+      POWER_EN_GPIO: 18  # Остава 18
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
       STARTUP_DELAY: 60

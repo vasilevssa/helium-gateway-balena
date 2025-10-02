@@ -19,15 +19,9 @@ RUN apt-get update && \
 # Copy the binary from builder stage
 COPY --from=builder /usr/src/app/target/release/gwmp-mux /usr/local/bin/gwmp-mux
 
-# Create config directory
-RUN mkdir -p /etc/gwmp-mux
-
-# Copy startup script and config template
+# Copy startup script
 COPY start-gwmp-mux.sh /opt/start-gwmp-mux.sh
 RUN chmod +x /opt/start-gwmp-mux.sh
-
-# Expose the GWMP port (where packet forwarder connects)
-EXPOSE 1700/udp
 
 WORKDIR /opt
 
