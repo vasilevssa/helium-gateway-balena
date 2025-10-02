@@ -5,8 +5,8 @@ services:
     build: ./gateway-service
     restart: unless-stopped
     ports:
-      - "4467:4467"      # gateway-rs API
-      - "1680:1680"      # packet forwarder port
+      - "4467:4467"
+      - "1680:1680"
     volumes:
       - gateway-data:/etc/helium_gateway
       - gateway-logs:/var/log
@@ -17,8 +17,6 @@ services:
     environment:
       - GW_REGION=EU868
       - ECC_CHIP=True
-    networks:
-      - balena-network
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
@@ -30,10 +28,6 @@ services:
       - "1700:1700/udp"
     environment:
       RUST_LOG: info
-    networks:
-      - balena-network
-    depends_on:
-      - gateway-service
 
   packet-forwarder:
     image: rakwireless/udp-packet-forwarder:latest
@@ -54,20 +48,12 @@ services:
       SPI_SPEED: 8000000
       STARTUP_DELAY: 15
       BAND: "eu_863_870"
-      SERVER_HOST: "gwmp-mux"
+      SERVER_HOST: "127.0.0.1"    # 👈 ПРОМЕНИ НА localhost
       SERVER_PORT: 1700
-      GPS_LATITUDE: "41.2256"    # 👈 ТВОИТЕ КООРДИНАТИ
-      GPS_LONGITUDE: "25.535"    # 👈 ТВОИТЕ КООРДИНАТИ
-      GPS_ALTITUDE: "200"        # 👈 ПРОМЕНИ според надморската височина
-    networks:
-      - balena-network
-    depends_on:
-      - gwmp-mux
+      GPS_LATITUDE: "41.2256"
+      GPS_LONGITUDE: "25.535"
+      GPS_ALTITUDE: "200"
 
 volumes:
   gateway-data:
   gateway-logs:
-
-networks:
-  balena-network:
-    driver: bridge
