@@ -16,14 +16,22 @@ echo "Initializing GPIO for WM1302..."
 echo "17" > /sys/class/gpio/export 2>/dev/null || true
 echo "out" > /sys/class/gpio/gpio17/direction
 echo "1" > /sys/class/gpio/gpio17/value
+sleep 0.5
+echo "0" > /sys/class/gpio/gpio17/value
+sleep 0.5
+echo "1" > /sys/class/gpio/gpio17/value
 
 # Initialize SX1302 POWER_EN pin (GPIO 18)  
 echo "18" > /sys/class/gpio/export 2>/dev/null || true
 echo "out" > /sys/class/gpio/gpio18/direction
 echo "1" > /sys/class/gpio/gpio18/value
 
+# Verify GPIO initialization
+echo "GPIO 17 status: $(cat /sys/class/gpio/gpio17/value)"
+echo "GPIO 18 status: $(cat /sys/class/gpio/gpio18/value)"
+
 # Small delay for GPIO stabilization
-sleep 1
+sleep 2
 
 echo "Checking for I2C device"
 
