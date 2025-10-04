@@ -19,6 +19,12 @@ services:
     environment:
       - GW_REGION=EU868
       - ECC_CHIP=True
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4467/"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+      start_period: 40s
     labels:
       io.balena.features.balena-api: '1'
       io.balena.features.supervisor-api: '1'
@@ -29,6 +35,12 @@ services:
     network_mode: host
     environment:
       RUST_LOG: info
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1700"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
     depends_on:
       - gateway-service
 
@@ -46,11 +58,11 @@ services:
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 17     # Променено на 17
-      POWER_EN_GPIO: 18  # Остава 18
+      RESET_GPIO: 17
+      POWER_EN_GPIO: 18
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
-      STARTUP_DELAY: 60
+      STARTUP_DELAY: 120
       BAND: "eu_863_870"
       SERVER_HOST: "127.0.0.1"
       SERVER_PORT: 1700
@@ -59,6 +71,7 @@ services:
       GPS_ALTITUDE: "200"
     depends_on:
       - gateway-service
+      - gwmp-mux
 
 volumes:
   gateway-data:
