@@ -4,7 +4,7 @@ FROM balenalib/raspberrypi4-64-debian:bookworm-run
 ARG SYSTEM_TIMEZONE=UTC
 ENV TZ=$SYSTEM_TIMEZONE
 
-# Install dependencies
+# Install dependencies with libgpiod
 RUN apt-get update && \
     DEBIAN_FRONTEND="noninteractive" \
     apt-get -y install \
@@ -13,6 +13,7 @@ RUN apt-get update && \
     spi-tools \
     curl \
     gpiod \
+    libgpiod-dev \
     --no-install-recommends && \
     apt-get autoremove -y && \
     apt-get clean && \

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Starting start-gateway-service.sh"
+echo "Starting start-gateway-service.sh with libgpiod"
 
 # Ensure we're in a writable directory
 cd /tmp
@@ -10,53 +10,41 @@ rm -f settings.toml
 rm -f /etc/helium_gateway/settings.toml
 rm -f /etc/helium_gateway/gateway_key.bin
 
-echo "Initializing GPIO for WM1302 with OFFICIAL reset sequence..."
+echo "Initializing GPIO for WM1302 using libgpiod..."
 
-# Initialize SX1302 RESET pin (GPIO 17)
-echo "17" > /sys/class/gpio/export 2>/dev/null || true
-echo "out" > /sys/class/gpio/gpio17/direction
-echo "1" > /sys/class/gpio/gpio17/value
+# Check available GPIO chips
+echo "Available GPIO chips:"
+gpiodetect
 
-# Initialize SX1302 POWER_EN pin (GPIO 18)  
-echo "18" > /sys/class/gpio/export 2>/dev/null || true
-echo "out" > /sys/class/gpio/gpio18/direction
-echo "1" > /sys/class/gpio/gpio18/value
+# Initialize GPIO using libgpiod
+echo "Initializing GPIO pins with libgpiod..."
+gpioset -m time -s 100 0 17=1   # SX1302_RESET = HIGH
+gpioset -m time -s 100 0 18=1   # POWER_EN = HIGH  
+gpioset -m time -s 100 0 5=1    # SX1261_RESET = HIGH
 
-# Initialize SX1261 RESET pin (GPIO 5)
-echo "5" > /sys/class/gpio/export 2>/dev/null || true
-echo "out" > /sys/class/gpio/gpio5/direction
-echo "1" > /sys/class/gpio/gpio5/value
-
-# OFFICIAL WM1302 RESET SEQUENCE
-echo "Performing OFFICIAL WM1302 reset sequence..."
+# OFFICIAL WM1302 RESET SEQUENCE using libgpiod
+echo "Performing OFFICIAL WM1302 reset sequence with libgpiod..."
 
 # 1. Power ON
-echo "1" > /sys/class/gpio/gpio18/value
+gpioset 0 18=1
 echo "Power enabled - waiting 100ms"
 sleep 0.1
 
 # 2. SX1302 Reset (активен LOW)
-echo "0" > /sys/class/gpio/gpio17/value
+gpioset 0 17=0
 sleep 0.1
-echo "1" > /sys/class/gpio/gpio17/value
+gpioset 0 17=1
 echo "SX1302 reset released - waiting 100ms"
 sleep 0.1
 
-# 3. SX1261 Reset (активен LOW)  
-echo "0" > /sys/class/gpio/gpio5/value
+# 3. SX1261 Reset (активен LOW)
+gpioset 0 5=0
 sleep 0.1
-echo "1" > /sys/class/gpio/gpio5/value
+gpioset 0 5=1
 echo "SX1261 reset released - waiting 2 seconds"
 sleep 2
 
-# Verify
-echo "GPIO Status after reset:"
-echo "GPIO 17 (SX1302_RESET): $(cat /sys/class/gpio/gpio17/value)"
-echo "GPIO 18 (POWER_EN): $(cat /sys/class/gpio/gpio18/value)"
-echo "GPIO 5 (SX1261_RESET): $(cat /sys/class/gpio/gpio5/value)"
-
-# Small delay for GPIO stabilization
-sleep 3
+echo "GPIO initialization complete"
 
 echo "Checking for I2C device"
 
