@@ -41,3 +41,17 @@ uri = "http://mainnet-config.helium.io:6080/"
 [router]
 uri = "http://mainnet-router.helium.io:8080/"
 queue = 20
+
+## 👇 ДОБАВЕТЕ ТОВА - КРИТИЧНО ЗА RADIO!
+[gateway]
+model = "RAK2287"
+
+[gateway.commissioning]
+gateway_id = ""
+key = ""
+
+[gateway.lorawan.radio]
+model = "sx1250"
+device = "/dev/spidev0.0"
+reset_pin = 22
+power_en_pin = 11

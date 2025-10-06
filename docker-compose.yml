@@ -1,4 +1,4 @@
-version: '2.4'
+vversion: '2.4'
 
 services:
   gateway-service:
@@ -67,8 +67,8 @@ services:
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 17
-      POWER_EN_GPIO: 18
+      RESET_GPIO: 22    # 👈 ПРОМЕНЕТЕ от 17 на 22
+      POWER_EN_GPIO: 11 # 👈 ПРОМЕНЕТЕ от 18 на 11
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
       STARTUP_DELAY: 180
