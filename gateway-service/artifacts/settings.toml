@@ -53,5 +53,5 @@ key = ""
 [gateway.lorawan.radio]
 model = "sx1250"
 device = "/dev/spidev0.0"
-reset_pin = 22
-power_en_pin = 11
+reset_pin = 17
+power_en_pin = 18

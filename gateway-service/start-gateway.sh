@@ -1,19 +1,19 @@
 #!/bin/sh
 set -e
 
-echo "Resetting WM1302 with correct GPIO pins..."
+echo "Resetting WM1302..."
 
-# Power enable - CORRECT PIN from WM1302 docs
-gpioset gpiochip0 11=1
+# Power enable SX1302 - CORRECT PIN 18
+gpioset gpiochip0 18=1
 sleep 0.2
 
-# Reset SX1302 - CORRECT PIN from WM1302 docs  
-gpioset gpiochip0 22=0
+# Reset SX1302 - CORRECT PIN 17
+gpioset gpiochip0 17=0
 sleep 0.1
-gpioset gpiochip0 22=1
+gpioset gpiochip0 17=1
 sleep 0.2
 
-# Reset SX1261 (ако е наличен)
+# Reset SX1261
 gpioset gpiochip0 5=0
 sleep 0.1
 gpioset gpiochip0 5=1
