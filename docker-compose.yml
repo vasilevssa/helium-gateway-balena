@@ -1,4 +1,4 @@
-vversion: '2.4'
+version: '2.4'
 
 services:
   gateway-service:
@@ -17,7 +17,7 @@ services:
     cap_add: [SYS_RAWIO]
     environment:
       - GW_REGION=EU868
-      - ECC_CHIP=False  # 👈 ПРОМЕНИ НА False (нямаме I2C)
+      - ECC_CHIP=False
     command: >
       sh -c "
         # Създай I2C device ако не съществува
@@ -51,7 +51,8 @@ services:
       retries: 12
       start_period: 20s
     depends_on:
-      - gateway-service
+      gateway-service:
+        condition: service_healthy
 
   packet-forwarder:
     image: rakwireless/udp-packet-forwarder:latest
@@ -67,11 +68,11 @@ services:
       INTERFACE: "SPI"
       HAS_GPS: 0
       HAS_LTE: 0
-      RESET_GPIO: 22    # 👈 ПРОМЕНЕТЕ от 17 на 22
-      POWER_EN_GPIO: 11 # 👈 ПРОМЕНЕТЕ от 18 на 11
+      RESET_GPIO: 17
+      POWER_EN_GPIO: 18
       RADIO_DEV: "/dev/spidev0.0"
       SPI_SPEED: 8000000
-      STARTUP_DELAY: 180
+      STARTUP_DELAY: 300
       BAND: "eu_863_870"
       SERVER_HOST: "127.0.0.1"
       SERVER_PORT: 1700
@@ -79,8 +80,10 @@ services:
       GPS_LONGITUDE: "25.535"
       GPS_ALTITUDE: "200"
     depends_on:
-      - gateway-service
-      - gwmp-mux
+      gateway-service:
+        condition: service_healthy
+      gwmp-mux:
+        condition: service_healthy
 
 volumes:
   gateway-data:
