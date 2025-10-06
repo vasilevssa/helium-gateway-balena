@@ -17,7 +17,6 @@ services:
     cap_add: [SYS_RAWIO]
     environment:
       - GW_REGION=EU868
-      - ECC_CHIP=False
     command: >
       sh -c "
         # Създай I2C device ако не съществува

@@ -4,11 +4,7 @@
 ## the secrets. The default one is file based one since all устройства can support it.
 
 # File based: 
-keypair = "/etc/helium_gateway/gateway_key.bin"
-
-# Ecc608 based (закоментирани за безопасност):
-# keypair = "ecc://i2c-1:96?slot=0"
-# onboarding = "ecc://i2c-1:96?slot=15"
+keypair = "file:///etc/helium_gateway/gateway_key.bin"
 
 # The address to listen on for the (semtech) packet forwarder
 listen = "0.0.0.0:1680"
@@ -18,19 +14,12 @@ listen = "0.0.0.0:1680"
 # network for security
 api = 4467
 
-# Default region (оставяме закоментирано, ще се вземе от конфигурацията)
-# region = "US915"
-
 [log]
-# Logging level
 level = "info"
 timestamp = true
 
 [poc]
-# Keep PoC disabled until gateway is on-chain
 disable = true
-
-# Entropy and ingest URIs
 entropy_uri = "http://entropy.iot.mainnet.helium.io:7080"
 ingest_uri = "http://mainnet-pociot.helium.io:9080"
 
@@ -42,7 +31,7 @@ uri = "http://mainnet-config.helium.io:6080/"
 uri = "http://mainnet-router.helium.io:8080/"
 queue = 20
 
-## 👇 ДОБАВЕТЕ ТОВА - КРИТИЧНО ЗА RADIO!
+## 👇 RADIO CONFIGURATION
 [gateway]
 model = "RAK2287"
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+##!/bin/sh
 set -e
 
 echo "Resetting WM1302..."
