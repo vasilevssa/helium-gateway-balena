@@ -27,7 +27,7 @@ RUN tar -xzf /tmp/helium-gateway.tar.gz -C /usr/bin/ && \
 
 # Copy configuration files
 COPY start-gateway.sh /opt/gateway/start-gateway.sh
-COPY settings.toml.template /etc/helium_gateway/settings.toml.template
+COPY artifacts/settings.toml /etc/helium_gateway/settings.toml
 
 # Make script executable
 RUN chmod +x /opt/gateway/start-gateway.sh
